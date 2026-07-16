@@ -16,4 +16,4 @@ titulo("Bem vinda!",
        desenvolvimento da sua pesquisa. """) 
 
 st.markdown("---") 
-st.markdown("> *Ler é dialogar.*  \n— Miguel de Cervantes")  
+st.markdown("> *Um país se faz com homens e livros.*  \n— Monteiro Lobato")  
