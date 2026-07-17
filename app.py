@@ -10,7 +10,7 @@ from utils.banco import criar_tabelas
 
 criar_tabelas() 
 
-st.set_page_config(page_icon="\U0001F50E", 
+st.set_page_config(page_icon=":paperclip:", 
                    layout="wide") 
 
 pg = st.navigation([
