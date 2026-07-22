@@ -16,4 +16,5 @@ titulo("Bem vinda!",
        desenvolvimento da sua pesquisa. """) 
 
 st.markdown("---") 
-st.markdown("> *Um país se faz com homens e livros.*  \n— Monteiro Lobato")  
+st.markdown("> *Todas as vitórias ocultam uma abdicação.*  \n— Simone de Beauvoir") 
+ 
