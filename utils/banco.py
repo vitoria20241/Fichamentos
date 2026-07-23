@@ -64,7 +64,6 @@ def titulo_existe(titulo):
 def listar_fichamentos():
     conn = conectar()
 
-    # Faz cada linha vir como um objeto com nome das colunas
     conn.row_factory = sqlite3.Row
 
     cursor = conn.cursor()
@@ -118,6 +117,20 @@ def excluir_fichamento(id_fichamento):
         """,
         (id_fichamento,)
     )
+
+    conn.commit()
+    conn.close() 
+
+
+def editar_anotacoes(id_fichamento, anotacoes):
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE fichamentos
+        SET anotacoes = ?
+        WHERE id = ?
+    """, (anotacoes, id_fichamento))
 
     conn.commit()
     conn.close() 
