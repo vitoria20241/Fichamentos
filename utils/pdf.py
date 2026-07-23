@@ -21,3 +21,9 @@ def salvar_pdf(upload):
 def excluir_pdf(caminho): 
     if caminho and os.path.exists(caminho):
         os.remove(caminho) 
+        
+
+def link_pdf(caminho_pdf):
+    pasta = "C:/Users/Vitoria/Documents/GitHub/Fichamentos/"
+    caminho_pdf = caminho_pdf.replace("\\", "/") 
+    return pasta + caminho_pdf 
