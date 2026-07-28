@@ -10,8 +10,7 @@ from utils.fichamento import criar_fichamento
 from utils.estilo import titulo
 
 
-st.sidebar.image("assets\\logo.png", width=250) 
-st.sidebar.markdown("---")
+st.sidebar.image("assets\\logo.png", width=200) 
 
 titulo("Novo Fichamento", 
        "Cadastre um arquivo e registre suas anotações para consulta futura.") 
