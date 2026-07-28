@@ -7,20 +7,36 @@ Created on Thu Jul 16 16:18:48 2026
 
 import streamlit as st
 from utils.banco import (listar_fichamentos, editar_anotacoes, 
-                         buscar_fichamento_por_id)
+                         buscar_fichamento_por_id, listar_tipos)
 from utils.fichamento import remover_fichamento
 from utils.pdf import link_pdf 
-from utils.estilo import titulo
 
 
-st.sidebar.image("assets\\logo.png", width=250) 
-st.sidebar.markdown("---")
-
-titulo("Fichamentos",
-       "Consulte e edite seus fichamentos.") 
+st.sidebar.image("assets\\logo.png", width=200) 
 
 
-fichamentos = listar_fichamentos()
+col1, col2 = st.columns([3, 1]) 
+with col1:
+    pesquisa = st.text_input(
+        "Pesquisar",
+        placeholder="Título, autor ou anotação..."
+    )
+with col2:
+    tipos = ["Todos"] + listar_tipos()
+    tipo = st.selectbox(
+        "Tipo", 
+        tipos
+    ) 
+    
+
+# Busca
+fichamentos = listar_fichamentos(
+    texto=pesquisa,
+    tipo=tipo
+)
+
+st.markdown("---") 
+st.write(f"📚 {len(fichamentos)} fichamento(s) encontrado(s)") 
 
 @st.dialog("Editar anotações")
 def dialog_editar(id_fichamento):
