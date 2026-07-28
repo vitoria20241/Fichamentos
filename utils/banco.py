@@ -61,23 +61,39 @@ def titulo_existe(titulo):
     return existe 
 
 
-def listar_fichamentos():
+def listar_fichamentos(texto="", tipo="Todos"):
     conn = conectar()
-
     conn.row_factory = sqlite3.Row
-
     cursor = conn.cursor()
+    
+    sql = """
+         SELECT id, titulo, autores, tipo, anotacoes, caminho
+         FROM fichamentos
+         WHERE 1=1
+     """
 
-    cursor.execute("""
-        SELECT *
-        FROM fichamentos
-        ORDER BY titulo
-    """)
+    parametros = []
 
+    if texto:
+        sql += """
+            AND (
+                titulo LIKE ?
+                OR autores LIKE ?
+                OR anotacoes LIKE ?
+            )
+        """
+        pesquisa = f"%{texto}%"
+        parametros.extend([pesquisa, pesquisa, pesquisa])
+
+    if tipo != "Todos":
+        sql += " AND tipo = ?"
+        parametros.append(tipo)
+
+    sql += " ORDER BY titulo"
+
+    cursor.execute(sql, parametros)
     resultados = cursor.fetchall()
-
     conn.close()
-
     return [dict(ficha) for ficha in resultados] 
 
 
@@ -134,3 +150,20 @@ def editar_anotacoes(id_fichamento, anotacoes):
 
     conn.commit()
     conn.close() 
+    
+
+def listar_tipos():
+    conn = conectar() 
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT DISTINCT tipo
+        FROM fichamentos
+        ORDER BY tipo
+    """)
+
+    tipos = [linha[0] for linha in cursor.fetchall()]
+
+    conn.close()
+
+    return tipos
