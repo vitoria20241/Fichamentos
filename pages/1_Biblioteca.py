@@ -73,9 +73,9 @@ for ficha in fichamentos:
 
         st.write("**Autor(es):**", ficha["autores"])
         st.write("**Tipo de documento:**", ficha["tipo"])
-
+        
         st.write("**Anotações:**")
-        st.text(ficha["anotacoes"])
+        st.markdown(ficha["anotacoes"])
 
         st.write("**Arquivo:**") 
         st.write(link_pdf(ficha["caminho"])) 
