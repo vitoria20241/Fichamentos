@@ -11,6 +11,22 @@ from utils.estilo import titulo
 
 
 st.sidebar.image("assets\\logo.png", width=200) 
+st.sidebar.markdown("---")
+with st.sidebar.expander("**Guia de Markdown**"):
+    st.text(
+        """
+        **negrito**
+        *itálico*
+        ~~riscado~~ 
+        # título
+        - lista
+        `código` 
+        
+        Quebra de linha: adicione dois espaços no final da linha.
+        
+        Novo parágrafo: deixe uma linha em branco. 
+        """
+        ) 
 
 titulo("Novo Fichamento", 
        "Cadastre um arquivo e registre suas anotações para consulta futura.") 
