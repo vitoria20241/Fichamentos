@@ -167,3 +167,20 @@ def listar_tipos():
     conn.close()
 
     return tipos
+
+
+def buscar_fichamentos_recentes(limite=3):
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT titulo, autores, tipo, anotacoes, caminho
+        FROM fichamentos
+        ORDER BY id DESC
+        LIMIT ?
+    """, (limite,))
+
+    fichamentos = cursor.fetchall()
+    conn.close()
+
+    return fichamentos 
