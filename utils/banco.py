@@ -6,11 +6,11 @@ Created on Thu Jul 16 14:52:46 2026
 """
 
 import sqlite3
+from config import BANCO
 
 
-DB = "dados\\fichamentos.db"
 def conectar():
-    return sqlite3.connect(DB) 
+    return sqlite3.connect(BANCO) 
 
 def criar_tabelas():
     conn = conectar()
