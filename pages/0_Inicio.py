@@ -6,7 +6,9 @@ Created on Thu Jul 16 19:27:04 2026
 """
 import streamlit as st
 from utils.estilo import titulo
+from utils.banco import buscar_fichamentos_recentes 
 from pathlib import Path
+import base64
 from config import MANDALA
 
 st.sidebar.markdown("---")
@@ -15,26 +17,56 @@ st.sidebar.write("""
                  🎓 31/03/2027 - Colação, 15h 
                  """) 
 
-titulo("Bem vinda!",
-       """
-       Organize suas leituras, registre fichamentos e acompanhe o 
-       desenvolvimento da sua pesquisa. """) 
+titulo("Biblioteca de pesquisa",
+       "Leituras, referências e fichamentos do TCC.") 
 
-st.markdown("---") 
+st.divider() 
+
+st.markdown("#### Últimas leituras") 
+
+fichamentos = buscar_fichamentos_recentes(3)
+
+if not fichamentos:
+    st.caption("Seus fichamentos aparecerão aqui.")
+else:
+    col1, col2 = st.columns([5, 1])
+    with col1:
+        for titulo_leitura, autores, tipo, anotacoes, caminho in fichamentos:
+            with st.expander(titulo_leitura):
+                st.write("**Autor(es):**", autores)
+                st.write("**Tipo de documento:**", tipo)
+                
+                st.write("**Anotações:**")
+                st.markdown(anotacoes)
+        
+                st.write("**Arquivo:**") 
+                st.write(caminho)  
+
+
 st.markdown("> *Todas as vitórias ocultam uma abdicação.*  \n— Simone de Beauvoir") 
 
-mandala = Path(MANDALA) 
+
+@st.cache_data
+def carregar_mandala(caminho):
+    with open(caminho, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+mandala = Path(MANDALA)
+
 if mandala.exists():
+    img = carregar_mandala(str(mandala))
+
     st.markdown(
         f"""
-        <img src="data:image/png;base64,{__import__('base64').b64encode(open(mandala, 'rb').read()).decode()}"
+        <img src="data:image/png;base64,{img}"
         style="
             position: fixed;
-            bottom: 20px;
-            right: 30px;
+            bottom: -95px;
+            right: -20px;
             width: 350px;
-            opacity: 0.30;
+            opacity: 0.16;
             z-index: 0;
+            pointer-events: none;
         ">
         """,
         unsafe_allow_html=True
