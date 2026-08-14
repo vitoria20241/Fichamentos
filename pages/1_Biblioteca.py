@@ -9,10 +9,6 @@ import streamlit as st
 from utils.banco import (listar_fichamentos, editar_anotacoes, 
                          buscar_fichamento_por_id, listar_tipos)
 from utils.fichamento import remover_fichamento
-from utils.pdf import link_pdf 
-
-
-st.sidebar.image("assets\\logo.png", width=200) 
 
 
 col1, col2 = st.columns([3, 1]) 
@@ -52,7 +48,18 @@ def dialog_editar(id_fichamento):
     col1, col2 = st.columns(2)
 
     with col1:
-        if st.button("Salvar", use_container_width=True):
+        if st.button(
+                "Cancelar", 
+                type = "secondary", 
+                use_container_width=True):
+            st.rerun()
+            
+    with col2:
+        if st.button(
+                "Salvar", 
+                type = "primary", 
+                use_container_width=True
+                ):
 
             editar_anotacoes(
                 id_fichamento,
@@ -62,10 +69,7 @@ def dialog_editar(id_fichamento):
             st.success("Anotações atualizadas!")
 
             st.rerun()
-
-    with col2:
-        if st.button("Cancelar", use_container_width=True):
-            st.rerun()
+            
 
 for ficha in fichamentos:
 
@@ -78,7 +82,7 @@ for ficha in fichamentos:
         st.markdown(ficha["anotacoes"])
 
         st.write("**Arquivo:**") 
-        st.write(link_pdf(ficha["caminho"])) 
+        st.write(ficha["caminho"])  
 
         col1, col2, col3 = st.columns(3)
 
@@ -111,11 +115,25 @@ for ficha in fichamentos:
                 f"Tem certeza que deseja excluir '{ficha['titulo']}'?"
             )
 
-            col1, col2 = st.columns(2)
+            col1, col2, col3, col4 = st.columns(4) 
 
-            with col1:
+            with col2:
+                if st.button(
+                    "Cancelar",
+                    type='secondary',
+                    key=f"cancelar_{ficha['id']}"
+                ):
+
+                    del st.session_state[
+                        f"confirmar_exclusao_{ficha['id']}"
+                    ]
+
+                    st.rerun()
+                    
+            with col3:
                 if st.button(
                     "Sim, excluir",
+                    type='primary',
                     key=f"confirmar_{ficha['id']}"
                 ):
 
@@ -127,17 +145,4 @@ for ficha in fichamentos:
 
                     st.success("Fichamento excluído!")
 
-                    st.rerun()
-
-            with col2:
-                if st.button(
-                    "Cancelar",
-                    key=f"cancelar_{ficha['id']}"
-                ):
-
-                    del st.session_state[
-                        f"confirmar_exclusao_{ficha['id']}"
-                    ]
-
-                    st.rerun()
-                    
+                    st.rerun() 
