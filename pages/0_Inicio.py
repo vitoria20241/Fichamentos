@@ -7,10 +7,13 @@ Created on Thu Jul 16 19:27:04 2026
 import streamlit as st
 from utils.estilo import titulo
 from pathlib import Path
+from config import MANDALA
 
-st.sidebar.image("assets\\logo.png", width=200) 
 st.sidebar.markdown("---")
-st.sidebar.write("🎓 Colação 31/03/2027 às 15h") 
+st.sidebar.write("""
+                 🎓 24/11/2026 - Entrega do TCC  
+                 🎓 31/03/2027 - Colação, 15h 
+                 """) 
 
 titulo("Bem vinda!",
        """
@@ -20,7 +23,7 @@ titulo("Bem vinda!",
 st.markdown("---") 
 st.markdown("> *Todas as vitórias ocultam uma abdicação.*  \n— Simone de Beauvoir") 
 
-mandala = Path("assets/mandala.png")
+mandala = Path(MANDALA) 
 if mandala.exists():
     st.markdown(
         f"""
