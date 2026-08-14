@@ -28,7 +28,7 @@ LOGO = os.path.join(
 
 MANDALA = os.path.join(
     IMAGENS_DIR,
-    "mandala.png"
+    "mandala_otimizada.png" 
 ) 
 
 ICONE = os.path.join(
