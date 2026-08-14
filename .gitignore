@@ -1,6 +1,9 @@
-logo.ico
+icone.ico
+Fichamentos.spec
 dados/
 pdfs/ 
+dist/
+build/ 
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
