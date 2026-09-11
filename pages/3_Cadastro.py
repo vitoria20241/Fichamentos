@@ -39,18 +39,6 @@ st.write(
 
 st.divider()
 
-# --------------------------------------------------
-# MENSAGEM DE SUCESSO
-# --------------------------------------------------
-
-if "mensagem_sucesso" in st.session_state:
-
-    st.success(
-        st.session_state.mensagem_sucesso
-    )
-
-    del st.session_state.mensagem_sucesso
-
 
 # --------------------------------------------------
 # FORMULÁRIO
@@ -60,13 +48,9 @@ col_formulario, col_vazia = st.columns([4, 1])
 
 with col_formulario:
 
-    titulo = st.text_input(
-        "Título"
-    )
+    titulo = st.text_input("Título")
 
-    autores = st.text_input(
-        "Autor(es)"
-    )
+    autores = st.text_input("Autor(es)")
 
     tipo = st.selectbox(
         "Tipo de documento",
@@ -89,7 +73,6 @@ with col_formulario:
         type=["pdf"],
     )
 
-
     # --------------------------------------------------
     # SALVAR
     # --------------------------------------------------
@@ -97,7 +80,7 @@ with col_formulario:
     if st.button(
         "Salvar",
         type="primary",
-        use_container_width=False,
+        use_container_width=True,
     ):
 
         if not titulo.strip():
@@ -118,11 +101,19 @@ with col_formulario:
 
             try:
 
+                # ------------------------------------------
+                # Envia PDF
+                # ------------------------------------------
+
                 caminho = enviar_pdf(
                     usuario_id=usuario.id,
                     arquivo_bytes=arquivo_pdf.getvalue(),
                     nome_arquivo=arquivo_pdf.name,
                 )
+
+                # ------------------------------------------
+                # Salva fichamento
+                # ------------------------------------------
 
                 criar_fichamento(
                     usuario_id=usuario.id,
@@ -133,12 +124,13 @@ with col_formulario:
                     caminho=caminho,
                 )
 
-                st.session_state.mensagem_sucesso = (
+                # ------------------------------------------
+                # Confirmação
+                # ------------------------------------------
+
+                st.success(
                     "Fichamento salvo com sucesso!"
                 )
-
-                st.rerun()
-
 
             except TituloDuplicadoError as e:
 
@@ -150,7 +142,6 @@ with col_formulario:
                         pass
 
                 st.warning(str(e))
-
 
             except Exception as e:
 
@@ -165,4 +156,4 @@ with col_formulario:
                     "Não foi possível salvar o fichamento."
                 )
 
-                st.exception(e)
+                st.exception(e) 
