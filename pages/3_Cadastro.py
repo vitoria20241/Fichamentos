@@ -80,7 +80,7 @@ with col_formulario:
     if st.button(
         "Salvar",
         type="primary",
-        use_container_width=True,
+        use_container_width=False,
     ):
 
         if not titulo.strip():
