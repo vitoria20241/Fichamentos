@@ -34,5 +34,5 @@ Projeto desenvolvido para uso pessoal e acadêmico, com foco em organização, p
 ## 📸 Interface
 
 <p align="center">
-  <img src="assets/screenshot-inicio.png" width="900">
+  <img src="assets/screenshot-inicio.png" width="800">
 </p> 
