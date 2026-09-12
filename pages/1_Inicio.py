@@ -17,7 +17,7 @@ from services.fichamentos import listar_ultimos_fichamentos
 
 usuario = exigir_login() 
 
-st.markdown("#### Biblioteca de pesquisa")
+st.markdown("#### ⌕ Biblioteca de pesquisa")
 col1, col2 = st.columns(2)
 with col1: 
     st.markdown("*Leituras, referências e fichamentos do TCC.*")
@@ -35,7 +35,7 @@ with col2:
 
 st.divider() 
 
-st.markdown("### Últimas leituras")
+st.markdown("#### ◴ Últimas leituras")
 
 ultimos_fichamentos = listar_ultimos_fichamentos(
     usuario_id=usuario.id,
@@ -52,7 +52,7 @@ for coluna, fichamento in zip(
     with coluna:
 
         st.markdown(
-            f"#### {fichamento['titulo']}"
+            f"**{fichamento['titulo']}**"
         )
 
         st.write(
