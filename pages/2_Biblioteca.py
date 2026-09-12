@@ -28,7 +28,7 @@ usuario = exigir_login()
 # CABEÇALHO
 # --------------------------------------------------
 
-st.markdown("### Biblioteca")
+st.markdown("#### Biblioteca")
 
 
 # --------------------------------------------------
