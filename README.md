@@ -16,10 +16,6 @@ O projeto foi criado para facilitar o acesso aos materiais da faculdade em difer
 - 🕐 Últimas leituras
 - 🔗 Acesso aos PDFs pelo navegador
 
-## 🌐 Acesso
-
-https://fichamentos.streamlit.app/
-
 ## 🛠️ Tecnologias
 
 - Python
