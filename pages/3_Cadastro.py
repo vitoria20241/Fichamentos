@@ -26,7 +26,7 @@ usuario = exigir_login()
 # CABEÇALHO
 # --------------------------------------------------
 
-st.markdown("### Novo Fichamento")
+st.markdown("#### Novo Fichamento")
 
 
 st.write(
