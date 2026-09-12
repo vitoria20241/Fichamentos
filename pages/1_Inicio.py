@@ -17,7 +17,7 @@ from services.fichamentos import listar_ultimos_fichamentos
 
 usuario = exigir_login() 
 
-st.markdown("#### Biblioteca de pesquisa")
+st.markdown("### Biblioteca de pesquisa")
 col1, col2 = st.columns(2)
 with col1: 
     st.markdown("*Leituras, referências e fichamentos do TCC.*")
