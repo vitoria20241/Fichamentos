@@ -91,9 +91,9 @@ with col_formulario:
 
             st.error("Informe o(s) autor(es).")
 
-        elif arquivo_pdf is None:
+        #elif arquivo_pdf is None:
 
-            st.error("Selecione um arquivo PDF.")
+            #st.error("Selecione um arquivo PDF.")
 
         else:
 
@@ -121,7 +121,7 @@ with col_formulario:
                     autores=autores.strip(),
                     tipo=tipo,
                     anotacoes=anotacoes.strip() or None,
-                    caminho=caminho,
+                    caminho=caminho or None,
                 )
 
                 # ------------------------------------------
