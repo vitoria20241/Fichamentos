@@ -81,7 +81,7 @@ if mandala.exists():
         <img src="data:image/png;base64,{img}"
         style="
             position: fixed;
-            bottom: -110px;
+            bottom: -120px;
             left: 50%;
             transform: translateX(-50%);
             width: min(2000px, 100vw);
