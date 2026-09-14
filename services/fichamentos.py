@@ -18,7 +18,7 @@ def criar_fichamento(
     autores: str,
     tipo: str | None,
     anotacoes: str | None,
-    caminho: str,
+    caminho: str | None,
 ):
     try:
         resposta = (
