@@ -2,8 +2,6 @@
 
 Aplicação web pessoal para organizar fichamentos acadêmicos e acessar os respectivos PDFs de qualquer lugar.
 
-O projeto foi criado para facilitar o acesso aos materiais da faculdade em diferentes computadores, sem depender de plataformas pagas.
-
 ## ✨ Funcionalidades
 
 - 🔐 Autenticação de usuário
