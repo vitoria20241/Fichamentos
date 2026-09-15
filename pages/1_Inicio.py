@@ -21,6 +21,7 @@ st.markdown("#### ⌕ Biblioteca de pesquisa")
 col1, col2 = st.columns(2)
 with col1: 
     st.markdown("*Leituras, referências e fichamentos do TCC.*")
+    st.markdown("> Formatação de referências: [FastFormat](https://app.fastformat.co/references/)")  
     
 with col2:
     st.markdown(
