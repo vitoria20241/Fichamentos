@@ -29,7 +29,7 @@ with col2:
         **Datas importantes:**  
         🎓 24/11/2026 - Entrega do TCC  
         🎓 02/12/2026 - Defesa, 09h às 10h30min  
-        🎓 31/03/2027 - Colação, 15h  
+        🎓 ~~31/03/2027 - Colação, 15h~~  
         """
         )
     
