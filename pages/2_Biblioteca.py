@@ -518,11 +518,6 @@ else:
                     "Tem certeza que deseja excluir este fichamento?"
                 )
 
-                if caminho_pdf:
-                    st.caption(
-                        "O PDF associado também será removido."
-                    )
-
                 if st.button(
                     "Sim, excluir",
                     key=f"excluir_{fichamento_id}",
