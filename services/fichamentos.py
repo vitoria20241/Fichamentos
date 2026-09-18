@@ -13,6 +13,17 @@ class TituloDuplicadoError(Exception):
     pass
 
 
+# --------------------------------------------------
+# SENTINEL PARA DIFERENCIAR:
+#
+# caminho não informado
+#       ≠
+# caminho = None
+# --------------------------------------------------
+
+CAMINHO_NAO_INFORMADO = object()
+
+
 def criar_fichamento(
     usuario_id: str,
     titulo: str,
@@ -22,6 +33,7 @@ def criar_fichamento(
     caminho: str | None,
 ):
     try:
+
         resposta = (
             supabase
             .table("fichamentos")
@@ -41,6 +53,7 @@ def criar_fichamento(
     except Exception as e:
 
         if "duplicate key" in str(e).lower():
+
             raise TituloDuplicadoError(
                 "Você já possui um fichamento com esse título."
             ) from e
@@ -48,7 +61,9 @@ def criar_fichamento(
         raise
 
 
-def listar_fichamentos(usuario_id: str):
+def listar_fichamentos(
+    usuario_id: str,
+):
     resposta = (
         supabase
         .table("fichamentos")
@@ -68,7 +83,7 @@ def atualizar_fichamento(
     autores: str,
     tipo: str | None,
     anotacoes: str | None,
-    caminho: str | None = None,
+    caminho=CAMINHO_NAO_INFORMADO,
 ):
     dados = {
         "titulo": titulo,
@@ -77,10 +92,24 @@ def atualizar_fichamento(
         "anotacoes": anotacoes,
     }
 
-    if caminho is not None:
+    # Se caminho foi informado, mesmo que seja None,
+    # ele deve ser atualizado.
+    #
+    # caminho não informado:
+    #     mantém o PDF atual.
+    #
+    # caminho = None:
+    #     remove a referência ao PDF.
+    #
+    # caminho = "usuario/arquivo.pdf":
+    #     define um novo PDF.
+
+    if caminho is not CAMINHO_NAO_INFORMADO:
+
         dados["caminho"] = caminho
 
     try:
+
         resposta = (
             supabase
             .table("fichamentos")
@@ -95,6 +124,7 @@ def atualizar_fichamento(
     except Exception as e:
 
         if "duplicate key" in str(e).lower():
+
             raise TituloDuplicadoError(
                 "Você já possui outro fichamento com esse título."
             ) from e
@@ -119,6 +149,7 @@ def remover_pdf(
     caminho = resposta.data.get("caminho")
 
     if caminho:
+
         excluir_pdf(caminho)
 
     resposta = (
