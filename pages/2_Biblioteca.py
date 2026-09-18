@@ -11,13 +11,16 @@ from services.fichamentos import (
     listar_fichamentos,
     excluir_fichamento,
     atualizar_fichamento,
-    TituloDuplicadoError 
+    remover_pdf,
+    TituloDuplicadoError,
 )
+
 from utils.auth import exigir_login
+
 from utils.storage import (
     gerar_url_pdf,
     excluir_pdf,
-    enviar_pdf
+    enviar_pdf,
 )
 
 
@@ -46,7 +49,7 @@ except Exception as e:
 
 if not fichamentos:
     st.info("Você ainda não possui nenhum fichamento.")
-    st.stop() 
+    st.stop()
 
 
 # --------------------------------------------------
@@ -98,26 +101,14 @@ fichamentos_filtrados = []
 
 for fichamento in fichamentos:
 
-    # ----------------------------------------------
-    # FILTRO POR TIPO
-    # ----------------------------------------------
-
     if filtro_tipo != "Todos":
 
         if fichamento.get("tipo") != filtro_tipo:
             continue
 
-
-    # ----------------------------------------------
-    # FILTRO POR TEXTO
-    # ----------------------------------------------
-
     if busca.strip():
 
         termos = busca.lower().split()
-
-
-        # Define onde pesquisar
 
         if campo_busca == "Título":
 
@@ -139,21 +130,12 @@ for fichamento in fichamentos:
                 fichamento.get("anotacoes") or "",
             ])
 
-
         texto = texto.lower()
-
-
-        # Todos os termos precisam aparecer
 
         if not all(termo in texto for termo in termos):
             continue
 
-
-    # ----------------------------------------------
-    # FICHAMENTO APROVADO PELOS FILTROS
-    # ----------------------------------------------
-
-    fichamentos_filtrados.append(fichamento)  
+    fichamentos_filtrados.append(fichamento)
 
 
 # --------------------------------------------------
@@ -168,7 +150,7 @@ st.divider()
 
 
 # --------------------------------------------------
-# DIALOGO DE EDICAO
+# DIÁLOGO DE EDIÇÃO
 # --------------------------------------------------
 
 @st.dialog("Editar fichamento")
@@ -213,12 +195,31 @@ def editar_dialog(fichamento):
 
     st.divider()
 
+    # --------------------------------------------------
+    # PDF
+    # --------------------------------------------------
+
+    caminho_atual = fichamento.get("caminho")
+
     st.write("**PDF atual**")
 
-    st.code(
-        fichamento["caminho"],
-        language=None,
-    )
+    if caminho_atual:
+
+        st.code(
+            caminho_atual,
+            language=None,
+        )
+
+        excluir_pdf_marcado = st.checkbox(
+            "Excluir PDF atual",
+            key=f"excluir_pdf_{fichamento['id']}",
+        )
+
+    else:
+
+        st.info("Nenhum PDF anexado.")
+
+        excluir_pdf_marcado = False
 
     novo_pdf = st.file_uploader(
         "Substituir PDF (opcional)",
@@ -226,7 +227,18 @@ def editar_dialog(fichamento):
         key=f"novo_pdf_{fichamento['id']}",
     )
 
+    if caminho_atual and novo_pdf is not None:
+
+        st.caption(
+            "Um novo PDF foi selecionado. "
+            "Ele substituirá o PDF atual."
+        )
+
     st.divider()
+
+    # --------------------------------------------------
+    # SALVAR
+    # --------------------------------------------------
 
     if st.button(
         "Salvar alterações",
@@ -235,16 +247,22 @@ def editar_dialog(fichamento):
     ):
 
         if not titulo.strip():
+
             st.error("Informe o título.")
             return
 
         if not autores.strip():
+
             st.error("Informe o(s) autor(es).")
             return
 
         caminho_novo = None
 
         try:
+
+            # ------------------------------------------
+            # 1. NOVO PDF TEM PRIORIDADE
+            # ------------------------------------------
 
             if novo_pdf is not None:
 
@@ -254,20 +272,55 @@ def editar_dialog(fichamento):
                     nome_arquivo=novo_pdf.name,
                 )
 
-            atualizar_fichamento(
-                usuario_id=usuario.id,
-                fichamento_id=fichamento["id"],
-                titulo=titulo.strip(),
-                autores=autores.strip(),
-                tipo=tipo,
-                anotacoes=anotacoes.strip() or None,
-                caminho=caminho_novo,
-            )
+                atualizar_fichamento(
+                    usuario_id=usuario.id,
+                    fichamento_id=fichamento["id"],
+                    titulo=titulo.strip(),
+                    autores=autores.strip(),
+                    tipo=tipo,
+                    anotacoes=anotacoes.strip() or None,
+                    caminho=caminho_novo,
+                )
 
-            if caminho_novo is not None:
+                # Remove o PDF anterior somente depois
+                # que o novo foi salvo com sucesso.
+                if caminho_atual:
 
-                excluir_pdf(
-                    fichamento["caminho"]
+                    excluir_pdf(caminho_atual)
+
+            # ------------------------------------------
+            # 2. SEM NOVO PDF + EXCLUSÃO MARCADA
+            # ------------------------------------------
+
+            elif excluir_pdf_marcado:
+
+                atualizar_fichamento(
+                    usuario_id=usuario.id,
+                    fichamento_id=fichamento["id"],
+                    titulo=titulo.strip(),
+                    autores=autores.strip(),
+                    tipo=tipo,
+                    anotacoes=anotacoes.strip() or None,
+                )
+
+                remover_pdf(
+                    usuario_id=usuario.id,
+                    fichamento_id=fichamento["id"],
+                )
+
+            # ------------------------------------------
+            # 3. SEM ALTERAÇÃO NO PDF
+            # ------------------------------------------
+
+            else:
+
+                atualizar_fichamento(
+                    usuario_id=usuario.id,
+                    fichamento_id=fichamento["id"],
+                    titulo=titulo.strip(),
+                    autores=autores.strip(),
+                    tipo=tipo,
+                    anotacoes=anotacoes.strip() or None,
                 )
 
             st.success(
@@ -278,7 +331,12 @@ def editar_dialog(fichamento):
 
         except TituloDuplicadoError as e:
 
+            # Se o novo PDF já foi enviado mas o
+            # fichamento não pôde ser atualizado,
+            # remove o novo arquivo para não
+            # deixar lixo no Storage.
             if caminho_novo is not None:
+
                 try:
                     excluir_pdf(caminho_novo)
                 except Exception:
@@ -289,6 +347,7 @@ def editar_dialog(fichamento):
         except Exception as e:
 
             if caminho_novo is not None:
+
                 try:
                     excluir_pdf(caminho_novo)
                 except Exception:
@@ -307,40 +366,73 @@ def editar_dialog(fichamento):
 
 for fichamento in fichamentos_filtrados:
 
-    st.markdown(f"#### {fichamento['titulo']}")
+    st.markdown(
+        f"#### {fichamento['titulo']}"
+    )
 
     st.write(
         f"**Autor(es):** {fichamento['autores']}"
     )
 
     if fichamento.get("tipo"):
+
         st.write(
             f"**Tipo:** {fichamento['tipo']}"
         )
 
     if fichamento.get("anotacoes"):
+
         st.write(
             f"**Anotações:** {fichamento['anotacoes']}"
         )
 
-    col_pdf, col_editar, col_excluir = st.columns([1, 1, 1])
+    caminho_pdf = fichamento.get("caminho")
 
-    with col_pdf:
+    # --------------------------------------------------
+    # BOTÕES
+    # --------------------------------------------------
 
-        try:
-            url_pdf = gerar_url_pdf(
-                fichamento["caminho"]
-            )
+    if caminho_pdf:
 
-            st.link_button(
-                "📄 Abrir PDF",
-                url_pdf,
-            )
+        col_pdf, col_editar, col_excluir = st.columns(
+            [1, 1, 1]
+        )
 
-        except Exception:
-            st.error(
-                "Não foi possível gerar o link do PDF."
-            )
+    else:
+
+        col_editar, col_excluir = st.columns(
+            [1, 1]
+        )
+
+    # --------------------------------------------------
+    # ABRIR PDF
+    # --------------------------------------------------
+
+    if caminho_pdf:
+
+        with col_pdf:
+
+            try:
+
+                url_pdf = gerar_url_pdf(
+                    caminho_pdf
+                )
+
+                st.link_button(
+                    "📄 Abrir PDF",
+                    url_pdf,
+                )
+
+            except Exception:
+
+                st.error(
+                    "Não foi possível gerar "
+                    "o link do PDF."
+                )
+
+    # --------------------------------------------------
+    # EDITAR
+    # --------------------------------------------------
 
     with col_editar:
 
@@ -348,7 +440,12 @@ for fichamento in fichamentos_filtrados:
             "✏️ Editar",
             key=f"editar_{fichamento['id']}",
         ):
+
             editar_dialog(fichamento)
+
+    # --------------------------------------------------
+    # EXCLUIR FICHAMENTO
+    # --------------------------------------------------
 
     with col_excluir:
 
@@ -367,9 +464,11 @@ for fichamento in fichamentos_filtrados:
 
                 try:
 
-                    excluir_pdf(
-                        fichamento["caminho"]
-                    )
+                    if caminho_pdf:
+
+                        excluir_pdf(
+                            caminho_pdf
+                        )
 
                     excluir_fichamento(
                         usuario_id=usuario.id,
