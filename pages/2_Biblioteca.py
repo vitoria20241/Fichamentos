@@ -233,7 +233,7 @@ def editar_dialog(fichamento):
             st.link_button(
                 "📄 Abrir PDF atual",
                 url_pdf,
-                use_container_width=True,
+                use_container_width=False,
             )
 
         except Exception:
