@@ -6,6 +6,7 @@ Created on Fri Aug 21 20:58:08 2026
 """
 
 from utils.supabase import supabase
+from utils.storage import excluir_pdf
 
 
 class TituloDuplicadoError(Exception):
@@ -108,7 +109,24 @@ def remover_pdf(
     resposta = (
         supabase
         .table("fichamentos")
-        .update({"caminho": None})
+        .select("caminho")
+        .eq("id", fichamento_id)
+        .eq("usuario_id", usuario_id)
+        .single()
+        .execute()
+    )
+
+    caminho = resposta.data.get("caminho")
+
+    if caminho:
+        excluir_pdf(caminho)
+
+    resposta = (
+        supabase
+        .table("fichamentos")
+        .update({
+            "caminho": None,
+        })
         .eq("id", fichamento_id)
         .eq("usuario_id", usuario_id)
         .execute()
@@ -147,4 +165,4 @@ def listar_ultimos_fichamentos(
         .execute()
     )
 
-    return resposta.data
+    return resposta.data 
