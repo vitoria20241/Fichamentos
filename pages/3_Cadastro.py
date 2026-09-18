@@ -16,10 +16,10 @@ from utils.auth import exigir_login
 from utils.storage import (
     enviar_pdf,
     excluir_pdf,
-) 
+)
 
 
-usuario = exigir_login() 
+usuario = exigir_login()
 
 
 # --------------------------------------------------
@@ -31,7 +31,7 @@ st.markdown("#### Novo Fichamento")
 
 st.write(
     """
-    Cadastre um arquivo e registre suas anotações 
+    Cadastre um arquivo e registre suas anotações
     para consulta futura.
     """
 )
@@ -69,7 +69,7 @@ with col_formulario:
     )
 
     arquivo_pdf = st.file_uploader(
-        "Selecione o PDF",
+        "Selecione o PDF (opcional)",
         type=["pdf"],
     )
 
@@ -91,10 +91,6 @@ with col_formulario:
 
             st.error("Informe o(s) autor(es).")
 
-        elif arquivo_pdf is None:
-
-            st.error("Selecione um arquivo PDF.")
-
         else:
 
             caminho = None
@@ -102,14 +98,16 @@ with col_formulario:
             try:
 
                 # ------------------------------------------
-                # Envia PDF
+                # Envia PDF somente se houver arquivo
                 # ------------------------------------------
 
-                caminho = enviar_pdf(
-                    usuario_id=usuario.id,
-                    arquivo_bytes=arquivo_pdf.getvalue(),
-                    nome_arquivo=arquivo_pdf.name,
-                )
+                if arquivo_pdf is not None:
+
+                    caminho = enviar_pdf(
+                        usuario_id=usuario.id,
+                        arquivo_bytes=arquivo_pdf.getvalue(),
+                        nome_arquivo=arquivo_pdf.name,
+                    )
 
                 # ------------------------------------------
                 # Salva fichamento
