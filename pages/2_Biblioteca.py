@@ -480,7 +480,7 @@ else:
                     st.link_button(
                         "📄 Abrir PDF",
                         url_pdf,
-                        use_container_width=False,
+                        use_container_width=True,
                     )
 
                 except Exception:
@@ -498,7 +498,7 @@ else:
             if st.button(
                 "✏️ Editar",
                 key=f"editar_{fichamento_id}",
-                use_container_width=False,
+                use_container_width=True,
             ):
 
                 editar_dialog(fichamento)
@@ -511,7 +511,7 @@ else:
 
             with st.popover(
                 "🗑️ Excluir",
-                use_container_width=False,
+                use_container_width=True,
             ):
 
                 st.write(
