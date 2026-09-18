@@ -101,6 +101,22 @@ def atualizar_fichamento(
         raise
 
 
+def remover_pdf(
+    usuario_id: str,
+    fichamento_id: int,
+):
+    resposta = (
+        supabase
+        .table("fichamentos")
+        .update({"caminho": None})
+        .eq("id", fichamento_id)
+        .eq("usuario_id", usuario_id)
+        .execute()
+    )
+
+    return resposta.data
+
+
 def excluir_fichamento(
     usuario_id: str,
     fichamento_id: int,
@@ -114,7 +130,7 @@ def excluir_fichamento(
         .execute()
     )
 
-    return resposta.data 
+    return resposta.data
 
 
 def listar_ultimos_fichamentos(
@@ -131,4 +147,4 @@ def listar_ultimos_fichamentos(
         .execute()
     )
 
-    return resposta.data 
+    return resposta.data
