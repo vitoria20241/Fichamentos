@@ -34,3 +34,5 @@ Projeto desenvolvido para uso pessoal e acadêmico, com foco em organização, p
 <p align="center">
   <img src="assets/inicio.png" width="900">
 </p> 
+
+*Desenvolvido por [Vitória Borges Bulhões](https://www.linkedin.com/in/vitoria-bulhoes)* 
